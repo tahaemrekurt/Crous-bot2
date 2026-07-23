@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 
 # ======================== SETTINGS =========================
 TARGET_URL = "https://trouverunlogement.lescrous.fr/tools/47/search?bounds=7.6881371_48.6461896_7.8360646_48.491861&locationName=Strasbourg"          
-HEADLESS   = True   # True = arkaplanda çalışır, False = tarayıcıyı gösterir
+HEADLESS   = True   # GitHub Actions için mutlaka True olmalı
 # ===========================================================
 
 # --- EMAIL CONFIGURATION ---
@@ -33,14 +33,6 @@ def send_alert(housing_url):
     except Exception as e:
         print(f"Failed to send email: {e}")
 
-def beep_loudly():
-    """macOS için sesli uyarı"""
-    for _ in range(3):
-        print('\a', end='', flush=True)
-        os.system('afplay /System/Library/Sounds/Glass.aiff')
-        import time
-        time.sleep(0.3)
-
 async def monitor():
     from playwright.async_api import async_playwright
     async with async_playwright() as p:
@@ -53,9 +45,10 @@ async def monitor():
         print(f"🔎 Monitoring Strasbourg (Filtrelenmiş): {TARGET_URL}")
         await page.goto(TARGET_URL, wait_until="networkidle")
 
-        print("⏳ Dinleniyor... Sadece gerçek ilan verilerinde ötecek.")
-        while True:
-            await asyncio.sleep(1)
+        # İsteklerin toparlanması için kısa bir süre bekleyip güvenle kapatıyoruz
+        print("⏳ İstekler dinleniyor...")
+        await asyncio.sleep(5)
+        print("✅ Kontrol tamamlandı, oturum kapatılıyor.")
 
 async def handle(request):
     url = request.url
@@ -72,7 +65,6 @@ async def handle(request):
                 # Eğer gelen JSON verisinin içinde 'items' doluysa veya 'results' varsa
                 if '"items":[' in body and '"items":[]' not in body:
                     print("🎉 Ev / İlan Bulundu!")
-                    beep_loudly()
                     send_alert(url)
                 else:
                     print("API yanıtı boş (Şu an ev yok).")
