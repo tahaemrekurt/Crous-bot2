@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 
 # ======================== SETTINGS =========================
 TARGET_URL = "https://trouverunlogement.lescrous.fr/tools/47/search?bounds=7.6881371_48.6461896_7.8360646_48.491861&locationName=Strasbourg"          
-HEADLESS   = False   # True = arkaplanda çalışır, False = tarayıcıyı gösterir
+HEADLESS   = True   # True = arkaplanda çalışır, False = tarayıcıyı gösterir
 # ===========================================================
 
 # --- EMAIL CONFIGURATION ---
