@@ -20,6 +20,12 @@ jobs:
       - name: Install dependencies
         run: |
           pip install requests
+      - name: Install dependencies
+        run: |
+          pip install playwright requests
+          playwright install chromium
 
+      - name: Run script
+        run: python monitor3.py
       - name: Run script
         run: python monitor3.py
